@@ -5,6 +5,9 @@ import org.apache.commons.io.FilenameUtils;
 import model.Address;
 
 import java.io.*;
+import java.time.LocalDate;
+import java.time.Month;
+import java.time.temporal.ChronoUnit;
 import java.util.*;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
@@ -13,39 +16,50 @@ import static model.ReaderCountry.USA;
 
 public class UsaAddressReader implements AddressReader {
 
+    public final static List<String> DIRECTORIES_PATHS = new ArrayList<>();
+
     @Override
-    public Collection<String> getMatchedRecords(String directory, Address address) throws IOException {
+    public Collection<String> getMatchedRecords(Address address, String... directories) throws IOException {
 
         List<String> records = new ArrayList<>();
 
-        for (File file : listFilesUsingJavaIO(directory)) {
+        for (String directory : directories) {
 
-            BufferedReader br = new BufferedReader(new FileReader(file));
-            String currentLine;
+            for (File file : listFilesUsingJavaIO(directory)) {
 
-            while ((currentLine = br.readLine()) != null) {
+                BufferedReader br = new BufferedReader(new FileReader(file));
+                String currentLine;
 
-                if (currentLine.length() <= 6) {
-                    continue;
-                }
+                while ((currentLine = br.readLine()) != null) {
 
-                boolean sameZipCode = currentLine.substring(1, 6).equals(address.getZipCode());
-                boolean containCity = currentLine.contains(address.getCity().toUpperCase());
+                    if (currentLine.length() <= 6) {
+                        continue;
+                    }
 
-                if (containCity && sameZipCode && currentLine.startsWith("D")) {
-                    records.add(currentLine);
-                    System.out.println(currentLine);
+                    boolean sameZipCode = currentLine.substring(1, 6).equals(address.getZipCode());
+                    boolean containCity = currentLine.contains(address.getCity().toUpperCase());
+
+                    if (containCity && sameZipCode && currentLine.startsWith("D")) {
+                        records.add(currentLine);
+                        System.out.println(currentLine);
+                    }
                 }
             }
         }
-
 
         return records;
     }
 
     @Override
     public ReaderCountry getResponsibleCountry() {
+
         return USA;
+    }
+
+    @Override
+    public void addDirectoryPath(String directoryPath) {
+
+        DIRECTORIES_PATHS.add(directoryPath);
     }
 
     private Set<File> listFilesUsingJavaIO(String dir) {

@@ -5,7 +5,10 @@ import model.Address;
 
 import java.io.*;
 import java.util.Collection;
+import java.util.List;
 import java.util.Scanner;
+
+import static model.ReaderCountry.USA;
 
 public class Main {
     public static void main(String[] args) throws IOException {
@@ -13,7 +16,9 @@ public class Main {
         Scanner scanner = new Scanner(System.in);
 
         System.out.println("Please select country for investigation: 1- USA | 2- AUS | 3-GBR");
-        ReaderCountry country = ReaderCountry.valueOf(scanner.nextLine().toUpperCase());
+        ReaderCountry country = ReaderCountry.valueOf(scanner.nextLine());
+        System.out.println("Please enter desired month:");
+        String month = scanner.nextLine();
         System.out.println("Please enter CtyStateDirectory:");
         String ctyStateDirectory = "D:\\";
         System.out.println("Please enter zip4 directory:");
@@ -28,9 +33,11 @@ public class Main {
         String street = "126 Lang Avenue";
 
         AddressReader addressReader = new AddressReaderProvider().getSingleContent(country);
+        List<String> directories = addressReader.getDirectories(month);
+
         Address address = new Address(zipCode, city, street);
 
-        Collection<String> recordsFound = addressReader.getMatchedRecords(ctyStateDirectory, address);
+        Collection<String> recordsFound = addressReader.getMatchedRecords(address, directories.toArray(String[]::new));
 
         //String sityStateKey =
 
