@@ -1,4 +1,4 @@
-package utils;
+package model;
 
 public class Address {
     private String zipCode;
