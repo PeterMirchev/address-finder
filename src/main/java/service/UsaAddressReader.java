@@ -1,5 +1,6 @@
 package service;
 
+import model.ReaderCountry;
 import org.apache.commons.io.FilenameUtils;
 import model.Address;
 
@@ -8,7 +9,10 @@ import java.util.*;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
+import static model.ReaderCountry.USA;
+
 public class UsaAddressReader implements AddressReader {
+
     @Override
     public Collection<String> getMatchedRecords(String directory, Address address) throws IOException {
 
@@ -37,6 +41,11 @@ public class UsaAddressReader implements AddressReader {
 
 
         return records;
+    }
+
+    @Override
+    public ReaderCountry getResponsibleCountry() {
+        return USA;
     }
 
     private Set<File> listFilesUsingJavaIO(String dir) {
